@@ -44,26 +44,10 @@ class GameScene: SKScene {
     }
     
     
-    func touchDown(atPoint pos : CGPoint) {
+    func addSquare(atPoint pos : CGPoint, color col : UIColor) {
         if let n = self.spinnyNode?.copy() as! SKShapeNode? {
             n.position = pos
-            n.strokeColor = SKColor.green
-            self.addChild(n)
-        }
-    }
-    
-    func touchMoved(toPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.blue
-            self.addChild(n)
-        }
-    }
-    
-    func touchUp(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.red
+            n.strokeColor = col
             self.addChild(n)
         }
     }
@@ -73,22 +57,25 @@ class GameScene: SKScene {
             label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
         }
         
-        for t in touches { self.touchDown(atPoint: t.location(in: self)) }
+        for t in touches { self.addSquare(atPoint: t.location(in: self), color: SKColor.green) }
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchMoved(toPoint: t.location(in: self)) }
+        for t in touches { self.addSquare(atPoint: t.location(in: self), color: SKColor.blue) }
+
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
+        for t in touches { self.addSquare(atPoint: t.location(in: self), color: SKColor.red) }
+
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
+        for t in touches { self.addSquare(atPoint: t.location(in: self), color: SKColor.red) }
+
     }
     
-    
+    /*
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
         
@@ -107,4 +94,5 @@ class GameScene: SKScene {
         
         self.lastUpdateTime = currentTime
     }
+    */
 }
