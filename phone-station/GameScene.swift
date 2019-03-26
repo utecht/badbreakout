@@ -17,6 +17,7 @@ class GameScene: SKScene {
     private var lastUpdateTime : TimeInterval = 0
     private var label : SKLabelNode?
     private var spinnyNode : SKShapeNode?
+    private var bouncingBox: SKShapeNode?
     
     override func sceneDidLoad() {
 
@@ -27,6 +28,15 @@ class GameScene: SKScene {
         if let label = self.label {
             label.alpha = 0.0
             label.run(SKAction.fadeIn(withDuration: 2.0))
+        }
+        
+        self.bouncingBox = self.childNode(withName: "//BouncingBox") as? SKShapeNode
+        if let bouncingBox = self.bouncingBox {
+            bouncingBox.physicsBody = SKPhysicsBody.init()
+            if let physicsBody = bouncingBox.physicsBody {
+                physicsBody.linearDamping = 0.9
+                physicsBody.affectedByGravity = false
+            }
         }
         
         // Create shape node to use during mouse interaction
@@ -45,6 +55,22 @@ class GameScene: SKScene {
     
     
     func addSquare(atPoint pos : CGPoint, color col : UIColor) {
+        if let bouncingBox = self.bouncingBox {
+            var dx = bouncingBox.position.x - pos.x
+            var dy = bouncingBox.position.y - pos.y
+            
+            let magnitude = sqrt(dx*dx+dy*dy)
+            dx /= magnitude
+            dy /= magnitude
+            
+            if let speed = bouncingBox.userData?.value(forKey: "speed") as? CGFloat {
+                dx *= -speed
+                dy *= -speed
+            }
+            let force = CGVector(dx: dx, dy: dy)
+            
+            bouncingBox.run(SKAction.applyForce(force, duration: 1))
+        }
         if let n = self.spinnyNode?.copy() as! SKShapeNode? {
             n.position = pos
             n.strokeColor = col
